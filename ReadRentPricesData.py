@@ -63,6 +63,8 @@ def getRentalDatePerZipcode(zipcode):
     return stats
     
 
-zipcode = '90032'
+zipcode = '90302'
 data = getRentalDatePerZipcode(zipcode)
+print(data)
+
 
