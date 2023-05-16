@@ -63,8 +63,6 @@ def getRentalDatePerZipcode(zipcode):
     return stats
     
 
-zipcode = '90302'
-data = getRentalDatePerZipcode(zipcode)
-print(data)
+
 
 
