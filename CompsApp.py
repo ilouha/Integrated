@@ -33,3 +33,8 @@ with open('./ZipcodeData/' + zipcode + '.json', 'w') as f:
     f.write(json)
 
 print(df)
+
+#save the df to a csv file
+df.to_csv('./ZipcodeData/' + zipcode + '.csv', sep=',', encoding='utf-8')
+#save the df to a json file
+df.to_json('./ZipcodeData/' + zipcode + '.json', orient='records')
