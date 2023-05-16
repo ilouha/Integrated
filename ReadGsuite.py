@@ -142,8 +142,6 @@ if __name__ == '__main__':
     dataconversion(Range_SoftCosts,'SoftCosts')
     dataconversion(Range_Incentives,'Incentives')
 
-
-
 #___________________________________________________________________________________________________________
 #Preloads the values from Gsheets and rewrites the variables for the json file
 
