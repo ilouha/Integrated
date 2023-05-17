@@ -60,8 +60,10 @@ def requestSoldHomesByZipcode(zipcode):
 
     stats = df['ppsf'].describe()
     #convert stats which is a float64 to a json file
-
+    #safe df as a csv file
+    df.to_csv('./CompsCSV/SoldHomes.csv')
     return stats
+
 
 
 
