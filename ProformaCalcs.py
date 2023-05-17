@@ -44,7 +44,27 @@ data_dict = {
 
 #iterate through the dictionary and create a string out the key and value
 
+keys_list = [
+    'total_area',
+    'total_units',
+    'average_unit_size',
+    'average_unit_rent',
+    'average_unit_sale_value',
+    'land_value',
+    'construction_cost',
+    'soft_costs',
+    'total_cost',
+    'sale_value',
+    'project_valuation',
+    'gross_profit',
+    'gross_margin'
+]
+
+#iterate through key_list and return the value from the data_dict
+
 values = []
-for key, value in data_dict.items():
-    value = '{}: {}'.format(key, value)
-    values.append(value)
+for item in keys_list:
+    values.append(item + ': ' + str(data_dict[item]))
+
+
+print(values)
