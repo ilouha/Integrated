@@ -25,25 +25,6 @@ total_project_costs = land_value + construction_costs + soft_costs
 
 #____________________________________________________________
 
-#total_area = 'Total Residential Area: {}'.format(total_area)
-#total_units = 'Total Residential Units: {}'.format(units)
-#average_unit_size = 'Average Unit Size: {}'.format(average_unit_size)
-#average_unit_rent = 'Average Unit Rent: {}'.format(average_rent)
-#average_unit_sale_value = 'Average Unit Sale Value: {}'.format(unit_sale_value)
-
-#land_value = 'Cost of Land: {}'.format(land_value)
-#construction_cost = 'Construction Cost (Residential): {}'.format(total_area*cpsf)
-#soft_costs = 'Soft cost: {}'.format(soft_costs)
-#total_cost = 'Total Project Cost {}'.format(total_project_costs)
-
-#sale_value = 'Sale Value (flip): {} '.format(total_area*ppsf)
-#project_valuation = 'Project Valuation (rentals) : {}'.format(project_valuation)
-
-#gross_profit = (total_area*ppsf) - total_project_costs
-#gross_margin = gross_profit/sale_value
-
-#____________________________________________________________
-
 data_dict = {
 
     'total_area': total_area,
@@ -62,5 +43,8 @@ data_dict = {
 }
 
 #iterate through the dictionary and create a string out the key and value
+
+values = []
 for key, value in data_dict.items():
-    print('{}: {}'.format(key, value))
+    value = '{}: {}'.format(key, value)
+    values.append(value)
