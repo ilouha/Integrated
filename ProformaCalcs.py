@@ -13,6 +13,32 @@ hard_soft_coef = 80  # Percentage of construction costs attributed to hard costs
 net_coef = 70  # Percentage of average rent considered as net operating income
 land_value = 1000000  # Value of the land
 
+#Functions
+
+def format_to_dollar_price(value):
+    if isinstance(value, (int, float)):
+        formatted_value = "${:,.2f}".format(value)
+    elif isinstance(value, str):
+        # Remove any non-numeric characters
+        value = ''.join(filter(str.isdigit, value))
+        if value:
+            formatted_value = "${:,.2f}".format(float(value)/100)
+        else:
+            formatted_value = "$0.00"
+    else:
+        raise TypeError("Unsupported value type. Only int, float, and str are supported.")
+    
+    return formatted_value
+
+def format_to_sf_area(value):
+    if isinstance(value, (int, float)):
+        formatted_value = "{:,.2f} SF".format(value)
+    else:
+        raise TypeError("Unsupported value type. Only int and float are supported.")
+    
+    return formatted_value
+
+#_______________________________________________________________________________________
 # Calculations
 average_unit_size = total_area / units  # Average size of each unit in square feet
 average_rent = float(rpsf) * total_area / units  # Average monthly rent per unit
@@ -23,22 +49,26 @@ construction_costs = total_area * cpsf  # Total construction costs for the proje
 soft_costs = construction_costs * ((100 - hard_soft_coef) / 100)  # Soft costs for the project
 total_project_costs = land_value + construction_costs + soft_costs  # Total costs for the project
 
+net_income = total_area * rpsf * 0.7 * 12 
+
 # Create a dictionary to store the calculated values
 data_dict = {
-    'total__buildbale_area': total_area,
-    'total_parking_area': total_parking_area,
+    'total__buildbale_area': format_to_sf_area(total_area),
+    'total_parking_area': format_to_sf_area(total_parking_area),
     'total_units': units,
-    'average_unit_size': average_unit_size,
-    'average_unit_rent': average_rent,
-    'average_unit_sale_value': unit_sale_value,
-    'land_value': land_value,
-    'construction_cost': total_area * cpsf + total_parking_area * cpsf_parking,
-    'soft_costs': soft_costs,
-    'total_cost': total_project_costs,
-    'sale_value': total_area * ppsf,
-    'project_valuation': project_valuation,
-    'gross_profit': total_area * ppsf - total_project_costs,
+    'average_unit_size': format_to_sf_area(average_unit_size),
+    'average_unit_rent': format_to_dollar_price(average_rent),
+    'average_unit_sale_value': format_to_dollar_price(unit_sale_value),
+    'land_value': format_to_dollar_price(land_value),
+    'construction_cost': format_to_dollar_price(total_area * cpsf + total_parking_area * cpsf_parking),
+    'soft_costs': format_to_dollar_price(soft_costs),
+    'total_cost': format_to_dollar_price(total_project_costs),
+    'sale_value': format_to_dollar_price(total_area * ppsf),
+    'project_valuation': format_to_dollar_price(project_valuation),
+    'gross_profit': format_to_dollar_price(total_area * ppsf - total_project_costs),
     'gross_margin': (total_area * ppsf - total_project_costs) / (total_area * ppsf),
+    'gross_income' : format_to_dollar_price(total_area * rpsf * 12) ,
+    'net_income' : format_to_dollar_price(net_income)
 }
 
 # Create a list of keys to iterate through
@@ -57,6 +87,8 @@ keys_list = [
     'project_valuation',
     'gross_profit',
     'gross_margin',
+    'gross_income',
+    'net_income'
 ]
 
 # Iterate through the keys_list and retrieve corresponding values from the data_dict
