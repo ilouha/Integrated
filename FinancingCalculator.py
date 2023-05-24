@@ -19,4 +19,7 @@ term = 30
 
 print(mortgage_calculator(principal, interest, term))
 
+interest = .03
+print(mortgage_calculator(principal, interest, term))
+
 
