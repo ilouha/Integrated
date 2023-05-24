@@ -30,6 +30,11 @@ def format_to_dollar_price(value):
     
     return formatted_value
 
+def float_to_percentage(number):
+    percentage = number * 100
+    formatted_percentage = "{:.2f}%".format(percentage)
+    return formatted_percentage
+
 def format_to_sf_area(value):
     if isinstance(value, (int, float)):
         formatted_value = "{:,.2f} SF".format(value)
@@ -66,7 +71,7 @@ data_dict = {
     'sale_value': format_to_dollar_price(total_area * ppsf),
     'project_valuation': format_to_dollar_price(project_valuation),
     'gross_profit': format_to_dollar_price(total_area * ppsf - total_project_costs),
-    'gross_margin': (total_area * ppsf - total_project_costs) / (total_area * ppsf),
+    'gross_margin': float_to_percentage((total_area * ppsf - total_project_costs) / (total_area * ppsf)),
     'gross_income' : format_to_dollar_price(total_area * rpsf * 12) ,
     'net_income' : format_to_dollar_price(net_income)
 }
@@ -104,4 +109,4 @@ df = pd.DataFrame(data_dict, index=[0])
 #flip df
 df = df.transpose()
 #save the df to a csv file
-df.to_csv('./test.csv', sep=',', encoding='utf-8')
+df.to_csv('./proforma.csv', sep=',', encoding='utf-8')

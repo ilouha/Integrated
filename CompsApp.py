@@ -9,7 +9,7 @@ import os
 from ReadRentPricesData import getRentalDatePerZipcode
 from ReadSoldPricesData import requestSoldHomesByZipcode
 
-zipcode = '90035'
+zipcode = '90066'
 
 rental_stats = getRentalDatePerZipcode(zipcode)
 sale_states = requestSoldHomesByZipcode(zipcode)
@@ -24,6 +24,8 @@ if not os.path.exists('./ZipcodeData'):
 #convert the df to json
 
 json = df.to_json()
+
+pprint(json)
 
 #add the json a key with the name zipcode and the value is the dataframe
 json = '{"' + zipcode + '":' + json + '}'
