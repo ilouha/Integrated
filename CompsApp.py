@@ -9,7 +9,7 @@ import os
 from ReadRentPricesData import getRentalDatePerZipcode
 from ReadSoldPricesData import requestSoldHomesByZipcode
 
-zipcode = '90066'
+zipcode = '90049'
 
 rental_stats = getRentalDatePerZipcode(zipcode)
 sale_states = requestSoldHomesByZipcode(zipcode)
