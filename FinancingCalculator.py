@@ -1,5 +1,7 @@
 from mortgage import Loan
 from pprint import pprint
+import numpy as np
+import pandas as pd
 
 def format_to_dollar_price(value):
     if isinstance(value, (int, float)):
@@ -32,16 +34,33 @@ def mortgage_calculator(principal, interest, term):
 def insurance_calculator(principal):
     return (principal * .01) / 12
 
-
 def property_tax_calculator(purchase_price):
     return (purchase_price * .01) / 12
 
-def construction_loan_calculator():
-    pass
+def construction_loan_calculator(construction_cost, interest, term_annual, principal, downpayment):
+    
+    prinicipal = int(construction_cost - ((1-downpayment)*construction_cost))
+    monthly_intrest = (float(interest)/100)/12
+    term_monthly = int(term_annual*12)
 
+    monthly_loan_payment = prinicipal*(monthly_intrest*(1+monthly_intrest)**term_monthly)/((1+monthly_intrest)**term_monthly-1)
+    total_payments = monthly_loan_payment * term_monthly
+
+    dict_loan = {
+        'construction_cost': format_to_dollar_price(construction_cost),
+        'interest': float_to_percentage(interest),
+        'number_of_payments': term_annual*12,
+        'principal': format_to_dollar_price(principal),
+        'downpayment': float_to_percentage(downpayment),
+        'monthly_loan_payment': format_to_dollar_price(monthly_loan_payment),
+        'total_payments': format_to_dollar_price(total_payments)
+
+    }
+
+    return dict_loan
 #_______________________________________________________________________________________
 
-#Calculations
+#Mortgage Calculator
 
 purchase_price = 1000000
 downpayment = 0.2
@@ -76,4 +95,18 @@ data_dict = {
 }
 
 pprint(data_dict)
+
+#_______________________________________________________________________________________
+
+#Construction Loan Calculator
+
+construction_cost = 1000000
+interest = 0.1
+term_annual = 7
+downpayment = 0.2
+
+dict_loan = construction_loan_calculator(construction_cost, interest, term_annual, principal, downpayment)
+
+pprint(dict_loan)
+
 
