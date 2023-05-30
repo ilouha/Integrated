@@ -100,13 +100,12 @@ pprint(data_dict)
 
 #Construction Loan Calculator
 
-construction_cost = 1000000
-interest = 0.1
-term_annual = 7
-downpayment = 0.2
+#construction_cost = 1000000
+#interest = 0.1
+#term_annual = 7
+#downpayment = 0.2
 
-dict_loan = construction_loan_calculator(construction_cost, interest, term_annual, principal, downpayment)
+#dict_loan = construction_loan_calculator(construction_cost, interest, term_annual, principal, downpayment)
 
-pprint(dict_loan)
-
+#pprint(dict_loan)
 

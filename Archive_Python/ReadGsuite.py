@@ -143,7 +143,7 @@ if __name__ == '__main__':
 #___________________________________________________________________________________________________________
 #Preloads the values from Gsheets and rewrites the variables for the json file
 
-    from app import main
+    from Archive_Python.app import main
 
     values = main()
 
