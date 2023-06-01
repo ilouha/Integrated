@@ -65,6 +65,8 @@ def process_zipcode_data(zipcode):
     
     #open json file data.json in write mode
 
+    pprint(dic)
+
     with open('data.json') as f:
         data = json.load(f)
 
@@ -76,5 +78,5 @@ def process_zipcode_data(zipcode):
         json.dump(data, outfile)
 
 # Example usage
-zipcode = '90049'
+zipcode = '90066'
 process_zipcode_data(zipcode)
