@@ -57,7 +57,7 @@ def ProformaCalc():
     soft_costs = construction_costs * ((100 - hard_soft_coef) / 100)  # Soft costs for the project
     total_project_costs = land_value + construction_costs + soft_costs  # Total costs for the project
 
-    net_income = total_area * rpsf * 0.7 * 12 
+    net_income = total_area * rpsf * net_coef * 12 
 
     # Create a dictionary to store the calculated values
     data_dict = {
