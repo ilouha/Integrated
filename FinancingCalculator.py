@@ -62,10 +62,10 @@ def construction_loan_calculator(construction_cost, interest, term_annual, princ
 
 #Mortgage Calculator
 
-purchase_price = 1100000
-downpayment = 0.2
+purchase_price = 559000
+downpayment = 0.5
 principal = purchase_price * (1 - downpayment)
-interest = .07
+interest = .08
 term = 30
 
 monthly_mortgage = mortgage_calculator(principal, interest, term)
