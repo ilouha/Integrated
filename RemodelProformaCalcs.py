@@ -46,8 +46,9 @@ occupancy_rate = 90
 construction_cost = building_size * cpsf
 soft_cost = construction_cost * (hard_soft_coef / 100)
 total_project_cost = purchase_price + construction_cost + soft_cost
-monthly_rent = float(rpsf) * building_size * (occupancy_rate/100)
-annual_rent = monthly_rent * 12
+gross_monthly_rent = float(rpsf) * building_size * (occupancy_rate/100)
+net_motnhly_rent = gross_monthly_rent * (net_coef / 100)
+annual_rent = gross_monthly_rent * 12
 gross_income = annual_rent
 net_income = annual_rent * (net_coef / 100)
 valuation = (net_income / (cap_rate / 100))
@@ -62,7 +63,8 @@ dict_proforma = {
     'construction_cost': format_to_dollar_price(construction_cost),
     'soft_cost': format_to_dollar_price(soft_cost),
     'total_project_cost': format_to_dollar_price(total_project_cost),
-    'monthly_rent': format_to_dollar_price(monthly_rent),
+    'gross_monthly_rent': format_to_dollar_price(gross_monthly_rent),
+    'net_monthly_rent': format_to_dollar_price(net_motnhly_rent),
     'gross_income': format_to_dollar_price(gross_income),
     'net_income': format_to_dollar_price(net_income),
     'valuation': format_to_dollar_price(valuation),
@@ -91,7 +93,8 @@ keys_list_proforma = [
     'construction_cost',
     'soft_cost',
     'total_project_cost',
-    'monthly_rent',
+    'gross_monthly_rent',
+    'net_monthly_rent',
     'gross_income',
     'net_income',
     'valuation',
