@@ -55,6 +55,7 @@ downpayment = 0.2
 
 interest = 2
 term = 30
+permit_length = 24
 
 #_______________________________________________________________________________________
 
@@ -67,7 +68,7 @@ monthly_property_tax = property_tax_calculator(purchase_price)
 
 total_monthly_payment = monthly_mortgage + monthly_insurance + monthly_property_tax
 total_annual_payment = total_monthly_payment * 12
-
+holding_cost = total_monthly_payment * permit_length
 #_______________________________________________________________________________________
 
 #create a dictionary to store the calculated values
@@ -85,6 +86,7 @@ data_dict = {
     'total_monthly_payment': format_to_dollar_price(total_monthly_payment),
     'total_annual_payment': format_to_dollar_price(total_annual_payment),
     'required_downpayment': format_to_dollar_price(required_downpayment),
+    'holding_cost': format_to_dollar_price(holding_cost),
 
 }
 
@@ -95,6 +97,7 @@ keys_list = [
     'principal',
     'interest',
     'term',
+    'holding_cost',
     'monthly_mortgage',
     'monthly_insurance',
     'monthly_property_tax',
@@ -108,8 +111,8 @@ for item in keys_list:
     values.append(item + ': ' + str(data_dict[item]))
 
 
-print(data_dict['total_monthly_payment'])
-
+#print(data_dict['total_monthly_payment'])
+pprint(data_dict)
 #_______________________________________________________________________________________
 
 

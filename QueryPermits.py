@@ -10,7 +10,7 @@ from sodapy import Socrata
 # Unauthenticated client only works with public data sets. Note 'None'
 # in place of application token, and no username or password:
 
-def NewBuildingPermits():
+def NewBuildingPermits(zipcode,zone):
     
     client = Socrata("data.lacity.org", None)
 
@@ -23,7 +23,7 @@ def NewBuildingPermits():
     # First 2000 results, returned as JSON from API / converted to Python list of
     # dictionaries by sodapy.
 
-    results = client.get("8cf2-izs5",permit_sub_type = "Commercial", limit=2000)
+    results = client.get("8cf2-izs5",limit=2000)
 
     # Convert to pandas DataFrame
     results_df = pd.DataFrame.from_records(results)
@@ -31,9 +31,10 @@ def NewBuildingPermits():
     print(results_df.head())
 
     #select all the information where zipcode is 90012 and zone contains C2
-    results_df = results_df.loc[(results_df['zip_code'] == '90012') & (results_df['zone'].str.contains('C2'))]
+    results_df = results_df.loc[(results_df['zip_code'] == zipcode) & (results_df['zone'].str.contains(zone))]
 
-
+    #print all column names in the dataframe
+    print(results_df.columns)
 
     list_columns_keep = [
 
@@ -41,6 +42,7 @@ def NewBuildingPermits():
         'floor_area_l_a_building_code_definition',
         'zone',
         'permit_sub_type',
+        'pcis_permit',
         'permit_type',
         'occupancy',
         'valuation',
@@ -51,4 +53,13 @@ def NewBuildingPermits():
     #keep only the columns from list_columns_keep in the dataframe
     results_df = results_df[list_columns_keep]
 
-    print(results_df.head())
+    return results_df
+
+
+zipcode = '90043'
+zone = 'C'
+
+df = NewBuildingPermits(zipcode,zone)
+
+print(df['pcis_permit'])
+print(df['issue_date'])
