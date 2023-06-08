@@ -132,3 +132,6 @@ for item in keys_list_assumptions:
 pprint(dict_proforma)
 pprint(dict_assumptions)
 
+#create a json and write to file
+with open('remodel_proforma.json', 'w') as outfile:
+    json.dump(dict_proforma, outfile)

@@ -78,5 +78,5 @@ def process_zipcode_data(zipcode):
         json.dump(data, outfile)
 
 # Example usage
-zipcode = '91316'
+zipcode = '90045'
 process_zipcode_data(zipcode)
