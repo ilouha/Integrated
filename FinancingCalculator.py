@@ -50,10 +50,10 @@ def property_tax_calculator(purchase_price):
 
 #Mortgage Calculator
 
-purchase_price = 1256590
+purchase_price = 1300000
 downpayment = 0.3
 
-interest = 4.5
+interest = 6.5
 term = 30
 permit_length = 24
 
