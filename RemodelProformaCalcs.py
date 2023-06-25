@@ -33,12 +33,12 @@ def format_to_sf_area(value):
 #_______________________________________________________________________________________
 # Calculations
 
-building_size = 9914 
-purchase_price = 2230000
+building_size = 3500 
+purchase_price = 1350000
 cap_rate = 5
-rpsf = 3.25
-ppsf = 587
-cpsf = 125
+rpsf = 5.56
+ppsf = 877
+cpsf = 95
 hard_soft_coef = 70
 net_coef = 70
 occupancy_rate = 90
