@@ -39,10 +39,10 @@ def process_zipcode_data(zipcode):
     json_data = df.to_json()
 
     # Add the json as a key with the name 'zipcode' and the value is the dataframe
-    json_data = '{"' + zipcode + '":' + json_data + '}'
+    json_data = '{"' + str(zipcode) + '":' + json_data + '}'
 
     # Save the json to a file
-    with open('./ZipcodeData/' + zipcode + '.json', 'w') as f:
+    with open('./ZipcodeData/' + str(zipcode) + '.json', 'w') as f:
         f.write(json_data)
 
     df_dict = df.to_dict(orient='index')
@@ -60,23 +60,26 @@ def process_zipcode_data(zipcode):
 
     }
 
-    for key, value in dic.items():
-        dic[key] = format_to_dollar_price(value) 
+    #for key, value in dic.items():
+    #    dic[key] = format_to_dollar_price(value) 
     
     #open json file data.json in write mode
 
-    pprint(dic)
+    #pprint(dic)
 
-    with open('data.json') as f:
-        data = json.load(f)
+    #with open('data.json') as f:
+    #    data = json.load(f)
 
-    data['json_schema']['statistics'] = dic
-    data['json_schema']['general_information']['zipcode'] = zipcode
+    #data['json_schema']['statistics'] = dic
+    #data['json_schema']['general_information']['zipcode'] = zipcode
 
     #save the json file
-    with open('data.json', 'w') as outfile:
-        json.dump(data, outfile)
+    #with open('data.json', 'w') as outfile:
+    #    json.dump(data, outfile)
 
+    return dic
+
+if __name__ == "__main__":
 # Example usage
-zipcode = '90016'
-process_zipcode_data(zipcode)
+    zipcode = '91325'
+    print(process_zipcode_data(zipcode))
