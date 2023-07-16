@@ -81,5 +81,5 @@ def process_zipcode_data(zipcode):
 
 if __name__ == "__main__":
 # Example usage
-    zipcode = '91325'
+    zipcode = '90066'
     print(process_zipcode_data(zipcode))
