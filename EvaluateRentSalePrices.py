@@ -55,10 +55,35 @@ df = df.round(2)
 #drop the following column names from the dataframe: unique_ppst, unique_rpsf,top_ppst, top_rpsf
 df = df.drop(['unique_ppsf', 'unique_rpsf', 'top_ppsf', 'top_rpsf','freq_ppsf','freq_rpsf'], axis=1)
 
-print(df.head())
 
-#save the dataframe as an excel file
-df.to_excel('ZipcodeData.xlsx')
+rent_feasibility_low = []
+rent_feasibility_high = []
+flip_feasibility = []
+
+for index,row in df.iterrows():
+    
+    #calculate the gross cash on cash return per sf
+
+    row['rent_feasibility_low'] = round(row['25%_rpsf']*12/row['25%_ppsf'],2)
+    row['rent_feasibility_high'] = round(row['75%_rpsf']*12/row['75%_ppsf'],2)
+
+    row['flip_feasibility'] = round(row['75%_ppsf']/row['25%_ppsf'],2)
+
+    #add the information above to the dataframe
+    
+    rent_feasibility_low.append(row['rent_feasibility_low'])
+    rent_feasibility_high.append(row['rent_feasibility_high'])
+    flip_feasibility.append(row['flip_feasibility'])
+
+
+df['rent_feasibility_low'] = rent_feasibility_low
+df['rent_feasibility_high'] = rent_feasibility_high
+df['flip_feasibility'] = flip_feasibility
+
+df.to_excel('./data/Price_Data_Per_Zipcode.xlsx')
+
+#df to json
+df.to_json('./data/Price_Data_Per_Zipcode.json', orient='index')
 
 
 

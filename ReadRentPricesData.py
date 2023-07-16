@@ -27,7 +27,8 @@ def getRentalDatePerZipcode(zipcode):
         json.dump(data, f)
     
 
-
+    print(data)
+    
     #flatten the json file
     data = data['listings']
 
@@ -65,4 +66,6 @@ def getRentalDatePerZipcode(zipcode):
 
 
 
+if __name__ == "__main__":
 
+    getRentalDatePerZipcode('90001')
