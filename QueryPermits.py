@@ -5,7 +5,7 @@
 # pip install sodapy
 
 import pandas as pd
-
+import json
 
 field_names = [
     "Assessor Book",
@@ -225,41 +225,88 @@ def collectURL_permit_assessors():
     #export the dataframe to an excel file
     df.to_excel(r'D:/50_Layouts/03_Data/230709_Building_Permits_description_sb_above_100k_edited.xlsx', index=False)
 
+def zipcode_analysis():
+
+        #create a dataframe from a csv located at "D:\50_Layouts\03_Data\230709_LA_County_ZIP_Codes.csv"
+        df = pd.read_csv(r'D:\50_Layouts\03_Data\230709_LA_County_ZIP_Codes.csv')
+
+        #create new dataframe with the columns of df
+        column_names = ['ZIPCODE', 'Low Tier Sale per SF', 'Mid Tier Sale per SF', 'High Tier Sale per SF', 'Low Tier Rent per SF', 'Mid Tier Rent per SF', 'High Tier Rent per SF']
+        df_new = pd.DataFrame(columns=column_names)
+
+        #iterate through the dataframe
+        for index, row in df.iterrows():
+
+            try:
+
+                #remove the leading zeros from the zipcode
+                zipcode = str(row['ZIPCODE'])
+                zipcode = zipcode.split('.')
+                zipcode = zipcode[0]
+
+                #data = Comps(zipcode)
+
+                row['zipcode'] = zipcode
+                row['Low Tier Sale per SF'] = data['low_tier_sale_per_sf']
+                row['Mid Tier Sale per SF'] = data['mid_tier_sale_per_sf']
+                row['High Tier Sale per SF'] = data['high_tier_sale_per_sf']
+                row['Low Tier Rent per SF'] = data['low_tier_rent_per_sf']
+                row['Mid Tier Rent per SF'] = data['mid_tier_rent_per_sf']
+                row['High Tier Rent per SF'] = data['high_tier_rent_per_sf']
+
+                #append the row to a new dataframe
+                df_new = df_new.append(row, ignore_index=True)
+
+            except KeyError:
+                pass
+
+
+        print(df_new)
+        df_new.to_excel(r'D:\50_Layouts\03_Data\230709_LA_County_ZIP_Codes_edited.xlsx', index=False)
+
 if __name__ == "__main__":
 
-    #create a dataframe from a csv located at "D:\50_Layouts\03_Data\230709_LA_County_ZIP_Codes.csv"
-    df = pd.read_csv(r'D:\50_Layouts\03_Data\230709_LA_County_ZIP_Codes.csv')
+    #open the json file 230711_LA_County_Zipcodes.geojson
+    with open(r'D:\50_Layouts\03_Data\230711_LA_County_Zipcodes .geojson') as f:
+        data = json.load(f)
+    
+    #open the excel file from the following path "D:\50_Layouts\03_Data\230709_LA_County_ZIP_Codes_edited.xlsx" as a dataframe
+    df = pd.read_excel(r'D:\50_Layouts\03_Data\230709_LA_County_ZIP_Codes_edited.xlsx')
+    df = df.fillna('missing')
+    #iterate through the json file
+    for feature in data['features']:
 
-    #create new dataframe with the columns of df
-    column_names = ['ZIPCODE', 'Low Tier Sale per SF', 'Mid Tier Sale per SF', 'High Tier Sale per SF', 'Low Tier Rent per SF', 'Mid Tier Rent per SF', 'High Tier Rent per SF']
-    df_new = pd.DataFrame(columns=column_names)
+        properties = feature['properties']
+        zipcode = properties['ZIPCODE']
 
-    #iterate through the dataframe
-    for index, row in df.iterrows():
+        #find the row in the dataframe where the cell value under column equals the value of zipcode
+        row = df.loc[df['ZIPCODE'] == int(zipcode)]
 
-        try:
+        #convert the row to a dicitionary  
+        row = row.to_dict('records')
 
-            #remove the leading zeros from the zipcode
-            zipcode = str(row['ZIPCODE'])
-            zipcode = zipcode.split('.')
-            zipcode = zipcode[0]
+        try: 
+            row = row[0]
 
-            #data = Comps(zipcode)
+            #add the dictionary to the properties dictionary from the json file
 
-            row['zipcode'] = zipcode
-            row['Low Tier Sale per SF'] = data['low_tier_sale_per_sf']
-            row['Mid Tier Sale per SF'] = data['mid_tier_sale_per_sf']
-            row['High Tier Sale per SF'] = data['high_tier_sale_per_sf']
-            row['Low Tier Rent per SF'] = data['low_tier_rent_per_sf']
-            row['Mid Tier Rent per SF'] = data['mid_tier_rent_per_sf']
-            row['High Tier Rent per SF'] = data['high_tier_rent_per_sf']
+            for key,value in row.items():
+                print(value)
+                if value != 'missing':
 
-            #append the row to a new dataframe
-            df_new = df_new.append(row, ignore_index=True)
+                    properties[key] = float(value)
+                
+                else:
+                    properties[key] = 0
+                    print(value)
 
-        except KeyError:
+        #convert the row to a dictionary and add it to the properties dictionary from the json file
+        
+        except IndexError:
             pass
+    #save the json file
+    with open(r'D:\50_Layouts\03_Data\230711_LA_County_Zipcodes_edited.geojson', 'w') as f:
+        json.dump(data, f)
 
-
-    print(df_new)
-    df_new.to_excel(r'D:\50_Layouts\03_Data\230709_LA_County_ZIP_Codes_edited.xlsx', index=False)
+    
+    
