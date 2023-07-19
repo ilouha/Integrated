@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import locale
+from PIL import Image
 
 def float_to_percentage(number):
     # Check if the input is a float or int
@@ -28,6 +29,10 @@ def float_to_dollars(amount):
 st.title('Layouts App - Analyze Real Estate Per Zipcode')
 st.write("disclamer: this is a demo app based on singular data source and shall not be used for any real estate investment decisions")
 
+#create a cover image
+image = Image.open('Images/SB09 Diagrams-01.png')
+st.image(image)
+
 #read the the json file data/Price_Data_Per_Zipcode.json and store in a dataframe df 
 df = pd.read_json('data/Price_Data_Per_Zipcode.json')
 
@@ -42,10 +47,6 @@ df.rename(columns={'index': 'zipcode'}, inplace=True)
 
 #conevrt the zipcode column to string
 df['zipcode'] = df['zipcode'].astype(str)
-
-# Display the updated DataFrame
-print(df)
-
 
 
 zipcode = st.text_input('Enter your zipcode:')
@@ -157,49 +158,119 @@ st.subheader('Remodel Proforma Calculator')
 
 building_size = st.number_input('Building Size',value=1200)
 purchase_price = st.number_input('Purchase Price',value=800000)
-cap_rate = 5
 rpsf = st.number_input('Rent per SF',value=4)
 ppsf = st.number_input('Price per SF',value=650)
 cpsf = st.number_input('Construction Cost per SF',value=75)
+
+cap_rate = 5
 hard_soft_coef = 70
 net_coef = 80
 occupancy_rate = 90
 
 from RemodelProformaCalcs import remodel_proforma_calcs
 
-data = remodel_proforma_calcs(
 
-    building_size,
-    purchase_price,
-    cap_rate,
-    rpsf,
-    ppsf,
-    cpsf,
-    hard_soft_coef,
-    net_coef,
-    occupancy_rate
 
-)
+st.text('')
+st.text('')
+st.subheader('New development Proforma Calculator')
 
-print(data)
-#st.dataframe(data)
-if data is not None:
+units = st.number_input('Number of total Units',value=1)
+added_area = st.number_input('Added Area',value=600)
+total_area = building_size + added_area
+total_parking_area = st.number_input('Total Parking Area',value=600)
+#rpsf_dev = st.number_input('Rent per SF',value=4)
+#ppsf_dev = st.number_input('Price per SF',value=650)
+#cpsf_dev = st.number_input('Construction Cost per SF',value=175)
+cpsf_parking = st.number_input('Construction Cost per SF for Parking',value=75)
 
-    total_project_cost = data['proforma']['total_project_cost']
-    net_income = data['proforma']['net_income']
-    cap_rate = data['proforma']['future_cap_rate']
+remodel_proforma = st.button('Calculate Remodel Proforma',on_click=None)
+Development_proforma = st.button('Calculate Development Proforma')
 
-    st.text('')
-    st.text('')
-    st.subheader('Proforma Results')
+if remodel_proforma:
+
+    from RemodelProformaCalcs import remodel_proforma_calcs
+    data = remodel_proforma_calcs(
+
+        building_size,
+        purchase_price,
+        cap_rate,
+        rpsf,
+        ppsf,
+        cpsf,
+        hard_soft_coef,
+        net_coef,
+        occupancy_rate
+
+    )
+
+    print(data)
+    #st.dataframe(data)
+    if data is not None:
+
+        total_project_cost = data['proforma']['total_project_cost']
+        net_income = data['proforma']['net_income']
+        cap_rate = data['proforma']['future_cap_rate']
+
+        st.text('')
+        st.text('')
+        st.subheader('Proforma Results')
+        
+        col1,col2,col3= st.columns(3)
+
+        col1.metric('Total Project Cost',total_project_cost)
+        col2.metric('Expected Income Post Expenses',net_income)
+        col3.metric('Cap Rate',cap_rate)
+
+
+
+    else: 
+        st.write('No underwriting data available')
+
+if Development_proforma:
+
+    from ProformaCalcs import ProformaCalc
+    land_value = purchase_price
+
+    data = ProformaCalc(units,
+                        total_area,
+                        total_parking_area,
+                        rpsf,
+                        ppsf,
+                        cpsf,
+                        cpsf_parking,
+                        cap_rate,
+                        hard_soft_coef,
+                        net_coef,
+                        land_value)
     
-    col1,col2,col3= st.columns(3)
+    if data is not None:
 
-    col1.metric('Total Project Cost',total_project_cost)
-    col2.metric('Expected Income Post Expenses',net_income)
-    col3.metric('Cap Rate',cap_rate)
+        total_project_cost = data['total_cost']
+        construction_cost = data['construction_cost']
+        cap_rate = data['cap_rate']
+        net_income = data['net_income']
+        sale_value = data['sale_value']
+        averae_unit_rent = data['average_unit_rent']
+        average_unit_size = data['average_unit_size']
 
 
+        st.text('')
+        st.text('')
+        st.subheader('Outline Costs')
+        
+        col1,col2,col3= st.columns(3)
 
-else: 
-    st.write('No underwriting data available')
+        col1.metric('Total Project Cost',total_project_cost)
+        col2.metric('Construction Cost',construction_cost)
+        col3.metric('Cap Rate',cap_rate)
+
+        st.text('')
+        st.text('')
+        st.subheader('Rental Proforma')
+        
+        col1,col2,col3= st.columns(3)
+
+        col1.metric('Average Unit Size',average_unit_size)
+        col2.metric('Average Unit Rent',averae_unit_rent)
+        col3.metric('Project Sale Value',sale_value)
