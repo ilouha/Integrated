@@ -69,7 +69,7 @@ def financing_calculator(purchase_price,downpayment,interest,term,permit_length)
     monthly_insurance = insurance_calculator(principal)
     monthly_property_tax = property_tax_calculator(purchase_price)
 
-    total_monthly_payment = monthly_mortgage + monthly_insurance + monthly_property_tax
+    total_monthly_payment = monthly_mortgage + monthly_insurance 
     total_annual_payment = total_monthly_payment * 12
     holding_cost = total_monthly_payment * permit_length
     #_______________________________________________________________________________________

@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import locale
 from PIL import Image
+from sb_proforma import full_scope_of_work_calcs
 
 def float_to_percentage(number):
     # Check if the input is a float or int
@@ -35,6 +36,16 @@ def dollar_to_float(value):
         raise TypeError("Unsupported value type. Only str is supported.")
     
     return value
+
+def format_to_sf_area(value):
+    if isinstance(value, (int, float)):
+        formatted_value = "{:,.2f} SF".format(value)
+    else:
+        raise TypeError("Unsupported value type. Only int and float are supported.")
+    
+
+
+
 st.title('Layouts App - Your online SB09 Feasibility Calculator')
 st.write("disclamer: this is a demo app based on singular data source and shall not be used for any real estate investment decisions")
 
@@ -53,148 +64,110 @@ st.subheader('Remodel Proforma Calculator')
 #_______________________________________________________________________________________________________________________
 #Input Parameters
 
-col1,col2,col3,col4,col5 = st.columns(5)
+col1,col2,col3,col4 = st.columns(4)
 
 with col1:
     building_size = st.number_input('Building Size',value=1200)
-    purchase_price = st.number_input('Purchase Price',value=1000000)
-#st.text('')
-#st.text('')
+    added_area = st.number_input('New Added Area',value=1200)
+    #purchase_price = st.number_input('Purchase Price',value=1000000)
+
 with col2:
-    units = st.number_input('No Units',value=1)
-    added_area = st.number_input('Added Area',value=600)
-    
-#st.text('')
-#st.text('')
-with col3:
+    #units = st.number_input('No Units',value=1)
     total_parking_area = st.number_input('New Parking Area',value=300)
-    cpsf = st.number_input('Remodel Cost per SF',value=75)
+    cpsf_parking = st.number_input('Cost per SF',value=75)
 
-#st.text('')
-#st.text('')
+with col3:
+    cpsf_addition = st.number_input('New Cost Per SF',value=275)
+    cpsf_remodel = st.number_input('Remodel Cost per SF',value=125)
+
 with col4:
-    cpsf_adition = st.number_input('New Cost Per SF',value=175)
-    cpsf_parking = st.number_input('Parking Cost per SF',value=75)
-
-with col5:
-    ppsf = st.number_input('Sale Price per SF',value=650)
+    ppsf = st.number_input('Sale Price per SF',value=750)
     rpsf = st.number_input('Rent Price per SF',value=4.75)
+    
+
+
 st.text('')
 st.text('')
 
+#_______________________________________________________________________________________
+#Calculating project costs 
+hard_soft_coef = 70
+ppsf_remodel = ppsf * 1.15
+units = 1
+project_scope = full_scope_of_work_calcs(  
 
-cap_rate = 5
-hard_soft_coef = 80
-net_coef = 80
-occupancy_rate = 90
-#rpsf = 4
+    building_size,
+    ppsf_remodel,
+    cpsf_remodel,
+    hard_soft_coef,  
+    units,
+    added_area,
+    total_parking_area,
+    rpsf,
+    ppsf,
+    cpsf_addition,
+    cpsf_parking,)
 
-
-from RemodelProformaCalcs import remodel_proforma_calcs
+#_______________________________________________________________________________________
 
 st.text('')
 st.text('')
 st.subheader('Exiting Remodeling Costs')
 
+if project_scope is not None:
 
-data = remodel_proforma_calcs(
+    data_remodel = project_scope['data_remodel']
+    data_addition = project_scope['data_addition']
 
-    building_size,
-    purchase_price,
-    cap_rate,
-    rpsf,
-    ppsf,
-    cpsf,
-    hard_soft_coef,
-    net_coef,
-    occupancy_rate
+    #Remodel Costs Calculations
+    remodel_total_cost = data_remodel['total_remodel_cost']
+    remodel_soft_cost = data_remodel['soft_cost']
+    remodel_construction_cost = data_remodel['construction_cost']
+    remodel_sale_value = data_remodel['sale_value']
 
-)
 
-print(data)
-#st.dataframe(data)
-if data is not None:
-
-    total_project_cost = data['proforma']['total_remodel_cost']
-    Gross_Profit = data['proforma']['profit']
-    sale_value = data['proforma']['sale_value']
+    #Addition Costs Calculations
+    addition_total_cost = data_addition['total_cost']
+    addition_construction_cost = data_addition['construction_cost']
+    addition_soft_cost = data_addition['soft_costs']
     
-    profit_margin = data['proforma']['profit_margin']
-    soft_cost = data['proforma']['soft_cost']
-    remodel_construction_cost = data['proforma']['construction_cost']
+    rental_unit_rent = data_addition['average_unit_rent']
+    rental_unit_average_size = data_addition['average_unit_size']
+    rental_gross_income = data_addition['gross_income']
+    addition_sale_value = data_addition['sale_value']
 
+
+    #Total Costs Calculations
+    total_project_cost = remodel_total_cost + addition_total_cost
+    total_soft_cost = remodel_soft_cost + addition_soft_cost
+    total_construction_cost = remodel_construction_cost + addition_construction_cost
+
+    total_sale_value = remodel_sale_value + addition_sale_value
+    total_monthly_rent = rental_unit_rent
+    total_gross_income = rental_gross_income
 
     col1,col2,col3= st.columns(3)
 
-    col1.metric('Total Remodel Costs',total_project_cost)
-    col2.metric('Construction Costs',remodel_construction_cost)
-    col3.metric('Soft Costs',soft_cost)
+    col1.metric('Total Project Costs',float_to_dollars(total_project_cost))
+    col2.metric('Total Construction Costs',float_to_dollars(total_construction_cost))
+    col3.metric('Total soft Costs',float_to_dollars(total_soft_cost))
 
-    #col1,col2,col3= st.columns(3)
+    st.text('')
+    st.text('')
 
-    #col1.metric('Sale Value',sale_value)
-    #col2.metric('Profit Margin',profit_margin)
-    #col3.metric('Gross Profit',sale_value)
+    col1,col2,col3= st.columns(3)
+
+    col1.metric('Total ARV Value',float_to_dollars(total_sale_value))
+    col2.metric('Total Monthly Rent',float_to_dollars(total_monthly_rent))
+    col3.metric('Total Annual Gross Income',float_to_dollars(total_gross_income))
 
 else: 
     st.write('No underwriting data available')
-#_______________________________________________________________________________________
-# New Development Proforma Calculator
 
-st.text('')
-st.text('')
-st.subheader('Development Costs')
-
-from Addition_Proforma import ProformaCalc
-
-land_value = purchase_price
-hard_soft_coef = 70
-net_coef = 80
-occupancy_rate = 90
-
-
-
-data = ProformaCalc(units,
-                    added_area,
-                    total_parking_area,
-                    rpsf,
-                    ppsf,
-                    cpsf_adition,
-                    cpsf_parking,
-                    hard_soft_coef,
-                    net_coef,
-                    )
-
-if data is not None:
-
-    total_project_cost = data['total_cost']
-    new_construction_cost = data['construction_cost']
-    soft_cost = data['soft_costs']
-    
-    averae_unit_rent = data['average_unit_rent']
-    average_unit_size = data['average_unit_size']
-    gross_income = data['gross_income']
-    
-
-    col1,col2,col3= st.columns(3)
-
-    col1.metric('Total Development Costs',total_project_cost)
-    col2.metric('Construction Costs',new_construction_cost)
-    col3.metric('Soft Costs',soft_cost)
-
-    st.text('')
-    st.text('')
-    st.subheader('Rental Proforma')
-    
-    col1,col2,col3= st.columns(3)
-
-    col1.metric('Average Unit Size',average_unit_size)
-    col2.metric('Average Unit Rent',averae_unit_rent)
-    col3.metric('Annual Groos Income',gross_income)
 #_______________________________________________________________________________________
 #Financing Calculator
 
-from FinancingCalculator import financing_calculator
+from FinancingCalculator_sb import financing_calculator
 
 st.text('')
 st.text('')
@@ -210,47 +183,31 @@ with col3:
     term = st.number_input('Loan Term',value=30)
 
 
-
-
-existing_construction_cost = dollar_to_float(remodel_construction_cost)
-new_construction_cost = dollar_to_float(new_construction_cost)
-
-total_costs = existing_construction_cost + new_construction_cost
-
-data = financing_calculator(total_costs,downpayment,Intrest,term,24)
-
+data = financing_calculator(total_project_cost,downpayment,Intrest,term,24)
 
 if data is not None: 
 
     col1,col2,col3 = st.columns(3)
 
-    col1.metric('Monthly Mortgage',data['monthly_mortgage'])
+    col1.metric('Monthly Payment',data['monthly_mortgage'])
     col2.metric('Monthly Insurance',data['monthly_insurance'])
     col3.metric('Total Monthly Payment',data['total_monthly_payment'])
 
-    st.text('')
-    st.text('')
-    
-
-    
 #_______________________________________________________________________________________
 #Provide Zipcode reference
-
+st.text('')
+st.text('')
+st.subheader('Comps Data per Zipcode')
 #read the the json file data/Price_Data_Per_Zipcode.json and store in a dataframe df 
 df = pd.read_json('data/Price_Data_Per_Zipcode.json')
-
 #swap rows and columns in the df
 df = df.transpose()
-
 # Create a new index column and move the current index to a column named 'zipcode'
 df.reset_index(inplace=True)
-
 # Rename the 'index' column to 'zipcode'
 df.rename(columns={'index': 'zipcode'}, inplace=True)
-
 #conevrt the zipcode column to string
 df['zipcode'] = df['zipcode'].astype(str)
-
 
 zipcode = st.text_input('Enter your zipcode:')
 
@@ -344,7 +301,6 @@ if zipcode:
     col1.metric('Minimum Sale',float_to_dollars(float(min_sale)))
     col2.metric('Maximum Sale',float_to_dollars(float(max_sale)))
     col3.metric('Sample Size',round(float(sample_size),0))
-
 
 else:
     st.write('Not in database')
