@@ -33,6 +33,8 @@ st.write("disclamer: this is a demo app based on singular data source and shall 
 image = Image.open('Images/SB09 Diagrams-01.png')
 st.image(image)
 
+#_______________________________________________________________________________________________________________________
+
 #read the the json file data/Price_Data_Per_Zipcode.json and store in a dataframe df 
 df = pd.read_json('data/Price_Data_Per_Zipcode.json')
 
@@ -146,6 +148,8 @@ if zipcode:
 else:
     st.write('Not in database')
 
+#_______________________________________________________________________________________________________________________
+#Remodel Proforma Calculator
 
 st.text('')
 st.text('')
@@ -161,9 +165,6 @@ hard_soft_coef = 70
 net_coef = 80
 occupancy_rate = 90
 rpsf = 4
-
-#_______________________________________________________________________________________
-# New Development Proforma Calculator
 
 from RemodelProformaCalcs import remodel_proforma_calcs
 data = remodel_proforma_calcs(
@@ -207,6 +208,7 @@ if data is not None:
     col1.metric('Sale Value',sale_value)
     col2.metric('Profit Margin',profit_margin)
     col3.metric('Gross Profit',sale_value)
+
 else: 
     st.write('No underwriting data available')
 #_______________________________________________________________________________________
@@ -228,7 +230,7 @@ added_area = st.number_input('Added Area',value=600)
 total_parking_area = st.number_input('Total Parking Area Added',value=600)
 cpsf_adition = st.number_input('Construction Cost per SF for Added Area',value=175)
 cpsf_parking = st.number_input('Construction Cost per SF for Parking Area',value=75)
-rpsf = st.number_input('Estimated Rent per SF',value=4)
+rpsf = st.number_input('Estimated Rent per SF',value=4.75)
 
 data = ProformaCalc(units,
                     added_area,
@@ -280,6 +282,10 @@ st.text('')
 st.subheader('Financing Calculator')
 
 construction_cost = construction_cost
+construction_cost = construction_cost.replace('$','')
+construction_cost = construction_cost.replace(',','')
+construction_cost = float(construction_cost)
+
 downpayment = st.number_input('Downpayment',value=20)
 Intrest = st.number_input('Financing Intrest',value = 8.0)
 term = st.number_input('Loan Term',value=30)
@@ -292,20 +298,16 @@ if data is not None:
 
     st.subheader('Financing Calculator')
 
-    col1,col2,col3= st.columns(3)
+    col1,col2,col3 = st.columns(3)
 
     col1.metric('Monthly Mortgage',data['monthly_mortgage'])
     col2.metric('Monthly Insurance',data['monthly_insurance'])
-    col3.metric('Monthly Property Tax',data['monthly_property_tax'])
+    col3.metric('Total Monthly Payment',data['total_monthly_payment'])
 
     st.text('')
     st.text('')
     
-    
-    col1,col2 = st.columns(2)
 
-    col1.metric('Total Monthly Payment',data['total_monthly_payment'])
-    col2.metric('Holding Costs',data['holding_cost'])
     
 #_______________________________________________________________________________________
 #Provide Permit Reference for SB09 
