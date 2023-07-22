@@ -48,8 +48,7 @@ def remodel_proforma_calcs(
     try: 
 
         construction_cost = building_size * cpsf
-        soft_cost = construction_cost * (1 - (hard_soft_coef / 100))
-        total_remodel_cost = construction_cost + soft_cost
+        soft_cost = construction_cost * (hard_soft_coef / 100)
         total_project_cost = purchase_price + construction_cost + soft_cost
         gross_monthly_rent = float(rpsf) * building_size * (occupancy_rate/100)
         net_motnhly_rent = gross_monthly_rent * (net_coef / 100)
@@ -68,7 +67,6 @@ def remodel_proforma_calcs(
             'construction_cost': format_to_dollar_price(construction_cost),
             'soft_cost': format_to_dollar_price(soft_cost),
             'total_project_cost': format_to_dollar_price(total_project_cost),
-            'total_remodel_cost': format_to_dollar_price(total_remodel_cost),
             'gross_monthly_rent': format_to_dollar_price(gross_monthly_rent),
             'net_monthly_rent': format_to_dollar_price(net_motnhly_rent),
             'gross_income': format_to_dollar_price(gross_income),
