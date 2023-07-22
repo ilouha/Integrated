@@ -270,13 +270,50 @@ if data is not None:
     col1.metric('Average Unit Size',average_unit_size)
     col2.metric('Average Unit Rent',averae_unit_rent)
     col3.metric('Annual Groos Income',gross_income)
+#_______________________________________________________________________________________
+#Financing Calculator
 
+from FinancingCalculator import financing_calculator
+
+st.text('')
+st.text('')
+st.subheader('Financing Calculator')
+
+construction_cost = construction_cost
+downpayment = st.number_input('Downpayment',value=20)
+Intrest = st.number_input('Financing Intrest',value = 8.0)
+term = st.number_input('Loan Term',value=30)
+Permit_Length = st.number_input('Permit_Length',value=24)
+
+data = financing_calculator(construction_cost,downpayment,Intrest,term,Permit_Length)
+
+
+if data is not None: 
+
+    st.subheader('Financing Calculator')
+
+    col1,col2,col3= st.columns(3)
+
+    col1.metric('Monthly Mortgage',data['monthly_mortgage'])
+    col2.metric('Monthly Insurance',data['monthly_insurance'])
+    col3.metric('Monthly Property Tax',data['monthly_property_tax'])
+
+    st.text('')
+    st.text('')
+    
+    
+    col1,col2 = st.columns(2)
+
+    col1.metric('Total Monthly Payment',data['total_monthly_payment'])
+    col2.metric('Holding Costs',data['holding_cost'])
+    
 #_______________________________________________________________________________________
 #Provide Permit Reference for SB09 
 
 from QueryApplicablePermits import readSB09Permits
 st.text('')
 st.text('')
-st.subheader('See approved SB09 Permits in City of Los Angeles for Reference')
-df = readSB09Permits()
-st.dataframe(df)
+approved_sb = st.button('Click to see approved SBO9 Permits')
+if approved_sb:
+    df = readSB09Permits()
+    st.dataframe(df)

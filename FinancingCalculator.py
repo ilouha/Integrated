@@ -50,69 +50,50 @@ def property_tax_calculator(purchase_price):
 
 #Mortgage Calculator
 
-purchase_price = 1300000
-downpayment = 0.3
 
-interest = 6.5
-term = 30
-permit_length = 24
 
+def financing_calculator(purchase_price,downpayment,interest,term,permit_length):
 #_______________________________________________________________________________________
 
-principal = purchase_price * (1 - downpayment)
-required_downpayment = purchase_price * downpayment
+    purchase_price = purchase_price
+    downpayment =  downpayment/100
 
-monthly_mortgage = calc_mortgage(principal, interest, term)
-monthly_insurance = insurance_calculator(principal)
-monthly_property_tax = property_tax_calculator(purchase_price)
-
-total_monthly_payment = monthly_mortgage + monthly_insurance + monthly_property_tax
-total_annual_payment = total_monthly_payment * 12
-holding_cost = total_monthly_payment * permit_length
-#_______________________________________________________________________________________
-
-#create a dictionary to store the calculated values
-
-data_dict = {
-
-    'purchase_price': format_to_dollar_price(purchase_price),
-    'downpayment': float_to_percentage(downpayment),
-    'principal': format_to_dollar_price(principal),
-    'interest': float_to_percentage(interest/100),
-    'term': term,
-    'monthly_mortgage': format_to_dollar_price(monthly_mortgage),
-    'monthly_insurance': format_to_dollar_price(monthly_insurance),
-    'monthly_property_tax': format_to_dollar_price(monthly_property_tax),
-    'total_monthly_payment': format_to_dollar_price(total_monthly_payment),
-    'total_annual_payment': format_to_dollar_price(total_annual_payment),
-    'required_downpayment': format_to_dollar_price(required_downpayment),
-    'holding_cost': format_to_dollar_price(holding_cost),
-
-}
-
-keys_list = [
-
-    'purchase_price',
-    'required_downpayment',
-    'principal',
-    'interest',
-    'term',
-    'holding_cost',
-    'monthly_mortgage',
-    'monthly_insurance',
-    'monthly_property_tax',
-    'total_monthly_payment',
-    'total_annual_payment'
-    
-]
-
-values = []
-for item in keys_list:
-    values.append(item + ': ' + str(data_dict[item]))
+    interest = interest
+    term = term
+    permit_length = permit_length
 
 
-#print(data_dict['total_monthly_payment'])
-pprint(data_dict)
-#_______________________________________________________________________________________
+    principal = purchase_price * (1 - downpayment)
+    required_downpayment = purchase_price * downpayment
 
+    monthly_mortgage = calc_mortgage(principal, interest, term)
+    monthly_insurance = insurance_calculator(principal)
+    monthly_property_tax = property_tax_calculator(purchase_price)
+
+    total_monthly_payment = monthly_mortgage + monthly_insurance + monthly_property_tax
+    total_annual_payment = total_monthly_payment * 12
+    holding_cost = total_monthly_payment * permit_length
+    #_______________________________________________________________________________________
+
+    #create a dictionary to store the calculated values
+
+    data_dict = {
+
+        'purchase_price': format_to_dollar_price(purchase_price),
+        'downpayment': float_to_percentage(downpayment),
+        'principal': format_to_dollar_price(principal),
+        'interest': float_to_percentage(interest/100),
+        'term': term,
+        'monthly_mortgage': format_to_dollar_price(monthly_mortgage),
+        'monthly_insurance': format_to_dollar_price(monthly_insurance),
+        'monthly_property_tax': format_to_dollar_price(monthly_property_tax),
+        'total_monthly_payment': format_to_dollar_price(total_monthly_payment),
+        'total_annual_payment': format_to_dollar_price(total_annual_payment),
+        'required_downpayment': format_to_dollar_price(required_downpayment),
+        'holding_cost': format_to_dollar_price(holding_cost),
+
+    }
+
+
+    return data_dict
 
